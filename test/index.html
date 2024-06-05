@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+    <style>
+        /* Style for the table to make it full width and with borders */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Merge borders of table cells */
+        }
+        /* Style for table, table headers, and table cells */
+        table, th, td {
+            border: 1px solid black; /* Add a black border */
+        }
+        /* Padding and text alignment for table headers and cells */
+        th, td {
+            padding: 10px;
+            text-align: left; /* Align text to the left */
+        }
+
+        /* Style for custom file input wrapper */
+        .custom-file-input {
+            position: relative;
+            display: inline-block; /* Display inline with other elements */
+        }
+        /* Hide the actual file input element */
+        .custom-file-input input[type=file] {
+            display: none; /* Hide the file input */
+        }
+        /* Style for the label that looks like a button */
+        .custom-file-input label {
+            border: 1px solid #ccc; /* Light grey border */
+            display: inline-block;
+            padding: 6px 12px; /* Padding for the label */
+            cursor: pointer; /* Make the label look clickable */
+        }
+    </style>
+</head>
+<body>
+    <!-- Main heading for the page -->
+    <h1>Welcome to Siemens</h1>
+
+    <!-- Custom file input element -->
+    <div class="custom-file-input">
+        <!-- Hidden file input field -->
+        <input type="file" id="fileInput" />
+        <!-- Label for the file input field -->
+        <label for="fileInput">Select Data to Import</label>
+    </div>
+
+    <!-- Table to display CSV data -->
+    <table id="dataTable">
+        <thead>
+            <!-- Table header row will be dynamically populated -->
+            <tr id="tableHeader"></tr>
+        </thead>
+        <tbody>
+            <!-- Table body rows will be dynamically populated -->
+            <tbody id="tableBody"></tbody>
+        </tbody>
+    </table>
+
+    <script>
+        // Add event listener to the file input to handle file selection
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            // Get the selected file
+            const file = event.target.files[0];
+            // Create a FileReader to read the file content
+            const reader = new FileReader();
+
+            // When the file is loaded, call the displayCSVData function
+            reader.onload = function(e) {
+                // Get the file content as text
+                const text = e.target.result;
+                // Display the CSV data in the table
+                displayCSVData(text);
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        });
+
+        // Function to display CSV data in the table
+        function displayCSVData(csvData) {
+            // Split the CSV data into lines
+            const lines = csvData.split('\n');
+            // Get the table header and body elements
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+
+            // Clear any existing data in the table
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            // Create table header from the first line of CSV data
+            const headers = lines[0].split(',');
+            headers.forEach(header => {
+                // Create a table header cell
+                const th = document.createElement('th');
+                // Set the text content of the header cell
+                th.textContent = header;
+                // Append the header cell to the table header row
+                tableHeader.appendChild(th);
+            });
+
+            // Create table rows for each subsequent line of CSV data
+            for (let i = 1; i < lines.length; i++) {
+                // Split the line into individual cells
+                const row = lines[i].split(',');
+                // Create a table row element
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    // Create a table cell
+                    const td = document.createElement('td');
+                    // Set the text content of the cell
+                    td.textContent = cell;
+                    // Append the cell to the table row
+                    tr.appendChild(td);
+                });
+                // Append the table row to the table body
+                tableBody.appendChild(tr);
+            }
+        }
+    </script>
+</body>
+</html>
